@@ -1,0 +1,6 @@
+@ShortenVueFE.Server_HostAddress = http://localhost:5176
+
+GET {{ShortenVueFE.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
