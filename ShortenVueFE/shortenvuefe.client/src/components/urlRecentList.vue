@@ -20,7 +20,7 @@
 
           <button @click="qrVisible = !qrVisible" class="url-btn-qr" v-if="!isEditing">QR</button>
 
-          <button class="url-btn-delete" @click="deleteUrl" v-if="!isEditing">Delete</button>
+          <button class="url-btn-delete" @click="deleteUrl();emitrefresh()" v-if="!isEditing">Delete</button>
         </div>
         <div v-if="qrVisible" :style="{backgroundImage: qrimg}" class="qr-code"></div>
         <div @click="qrVisible = false" v-if="qrVisible" class="qr-code-mask"></div>
@@ -84,7 +84,7 @@ this.returnDate()
 
 methods: {
     emitrefresh () {
-        this.$emit(refresh)
+        this.$emit('refresh')
     },
 
     returnDate() {

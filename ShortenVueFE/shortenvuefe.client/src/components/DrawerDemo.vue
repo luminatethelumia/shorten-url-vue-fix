@@ -19,7 +19,12 @@
 
 
     <div class="recent-url-list">
-      <div class="total-url" style="width: 100%;text-align: center;margin-top: 10px;font-weight: bold;margin-bottom: 0;" >Total URL: {{ urlLength }} </div>
+      <!-- <div style="display: flex; justify-content: center;"> -->
+      <div class="total-url" style="gap: 10px; display: flex; justify-content: center; align-items: center; flex-basis: auto; width: 100%;text-align: center;margin-top: 10px;font-weight: bold;margin-bottom: 0;" ><p>Total URL: {{ urlList.length }} </p>
+        <img v-if="isLoading" src="../assets/loading.gif" style="height: 20px; width: 20px ;" alt="">
+      </div>
+        
+      <!-- </div> -->
 
       <UrlRecentList 
       v-for="url in urlList"
@@ -30,7 +35,7 @@
       :code="url.code"
       :apiurl="apiUrlTest"
       :date="url.createdAt"
-      @refresh="getDataTest"
+      @refresh="getDataTime"
       >
 
       </UrlRecentList>
@@ -109,14 +114,23 @@ export default {
       urlpost: "",
       alertMessage: 0, // 0 = none ,1 = url valid, 2 = invalid url, 3 = url exist
       returnedUrl: {},
-      isEditing: [false,false],
-      urlLength: 0
+      // isEditing: [false,false],
+      urlLength: 0,
+      isLoading: false
     };
   },
   components: {
 UrlRecentList
   },
-  methods: {
+    methods: {
+
+      getDataTime() {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.getDataTest()
+          this.isLoading = false;
+        }, 7000);
+      },
 
     // GET URL FROM INPUT THEN DO POST
     getFormValues () {
@@ -178,24 +192,30 @@ UrlRecentList
             body: JSON.stringify({ url: urlpost },),
           })
 
-          // if (!res.ok) {
-          //         throw new Error(`Response status: ${response.status}`);
-          //       }
+          if (!res.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+          else {
             const finalRes = await res.json();
             this.returnedUrl = finalRes
-            if (finalRes == "Provided an invalid uri") 
-            {
+            if (finalRes == "Provided an invalid uri") {
               this.alertMessage = 2
-            } else if (finalRes == "The uri is existed!") 
-            {
+            } else if (finalRes == "The uri is existed!") {
               this.alertMessage = 3
-            } else
-            {
+            } else {
               this.alertMessage = 1
             }
-            
+
+            // setTimeout(() => {
+            //   console.log(finalRes)
+            //   this.getDataTest()
+            // }, 5000);
+            this.getDataTime()
             console.log(finalRes)
-            this.getDataTest()
+            
+
+          }
+
 
         } catch (error) {
           console.error(error.message);
@@ -204,17 +224,17 @@ UrlRecentList
 
     // edit shorten code
 
-    async putShortenCode(code) {
-      try {
-        const res = await fetch(this.apiUrlTest + "/UrlShorten/edit-shorten?code=" + code)
-        if (!res.ok) {
-          throw new Error(`Response status: ${res.status}`);
-        }
-        const finalRes = await res.json();
-        console.log(finalRes)
-      } catch (error) {
-      }
-    },
+    //async putShortenCode(code) {
+    //  try {
+    //    const res = await fetch(this.apiUrlTest + "/UrlShorten/edit-shorten?code=" + code)
+    //    if (!res.ok) {
+    //      throw new Error(`Response status: ${res.status}`);
+    //    }
+    //    const finalRes = await res.json();
+    //    console.log(finalRes)
+    //  } catch (error) {
+    //  }
+    //},
 
   },
   mounted() {
@@ -230,6 +250,7 @@ UrlRecentList
 
 
 <style scoped>
+
 
 /* .view {
   border-color: transparent;
