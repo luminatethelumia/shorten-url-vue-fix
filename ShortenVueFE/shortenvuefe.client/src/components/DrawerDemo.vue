@@ -129,7 +129,7 @@ UrlRecentList
         setTimeout(() => {
           this.getDataTest()
           this.isLoading = false;
-        }, 7000);
+        }, 8000);
       },
 
     // GET URL FROM INPUT THEN DO POST
